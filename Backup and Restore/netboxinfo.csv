@@ -1,0 +1,9 @@
+Device Name,Device ID,Device Type,Manufacturer,Model,Role,Site,Status,Primary IP,Serial Number
+FW01,6,FortiAP 231F,Fortinet,FortiAP 231F,Firewall,HQ Site,Planned,192.168.7.50/24,
+FW--02,7,FortiAP 231F,Fortinet,FortiAP 231F,Firewall,HQ Site,Planned,192.168.7.51/24,
+FW03,8,FortiAP 231F,Fortinet,FortiAP 231F,Firewall,Remote Site,Planned,192.168.7.53/24,
+L2SW3,3,cisco_ios,Cisco,cisco_ios,Access Switch,HQ Site,Planned,192.168.7.18/24,
+L2SW4,4,Catalyst 3650 PoE+ 4X1G,Cisco,Catalyst 3650 PoE+ 4X1G,Access Switch,HQ Site,Planned,192.168.7.20/24,
+L2SW5,5,Catalyst 3650 PoE+ 4X1G,Cisco,Catalyst 3650 PoE+ 4X1G,Access Switch,Remote Site,Planned,192.168.7.19/24,
+L3SW1,1,NM-BLANK-T1,Cisco,NM-BLANK-T1,Core Switch,HQ Site,Planned,192.168.7.16/24,
+L3SW2,2,NM-BLANK-T1,Cisco,NM-BLANK-T1,Core Switch,HQ Site,Planned,192.168.7.17/24,

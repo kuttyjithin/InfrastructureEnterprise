@@ -1,0 +1,59 @@
+! Command: show running-config
+! device: SW04 (vEOS-lab, EOS-4.26.2F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+no aaa root
+aaa authentication policy local allow-nopassword-remote-login
+!
+username admin privilege 15 role network-admin secret sha512 $6$gMq.rMHI7RM6/p3.$I/i7JU2BeefDyHT6oxm6TG1yClXHZm6QuxXJYnGPMqAAGMUg6h3i/yYcGRFG9kos8zdKPjrjuPKrWD3b9EOwk1
+username cisco privilege 15 secret sha512 $6$9pd6DwdKRjljlMOS$luQa6EC5brE3m.lGQGFsDiFoo5tUBjXYtGbGtUIw3WtlUGA6NsifgXZKvSOlmz3f22VEs/bKgtLEVcVq44Kwf0
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model ribd
+!
+hostname SW04
+!
+spanning-tree mode rapid-pvst
+!
+clock timezone America/Edmonton
+!
+vlan 10,30,40,60
+!
+vlan 20
+   name client2
+!
+management api http-commands
+   no shutdown
+!
+interface Ethernet1
+   switchport mode trunk
+!
+interface Ethernet2
+   switchport mode trunk
+!
+interface Ethernet3
+   switchport access vlan 30
+!
+interface Ethernet4
+   switchport access vlan 40
+!
+interface Management1
+   ip address 192.168.7.20/24
+!
+interface Vlan10
+   ip address 192.168.10.5/24
+!
+interface Vlan20
+   ip address 192.168.20.5/24
+!
+interface Vlan30
+   ip address 192.168.30.5/24
+!
+interface Vlan40
+   ip address 192.168.40.5/24
+!
+no ip routing
+!
+end

@@ -1,0 +1,314 @@
+
+!Command: show running-config
+!Running configuration last done at: Thu Feb 29 14:07:29 2024
+!Time: Thu Feb 29 14:10:57 2024
+
+version 9.3(11) Bios:version  
+hostname SW1
+vdc SW1 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+cfs eth distribute
+feature ospf
+feature netconf
+feature restconf
+feature interface-vlan
+feature hsrp
+feature lacp
+feature vpc
+
+no password strength-check
+username admin password 5 $5$CMIPIH$EbX16oMal/KNToCNXiPqpu9Et5eYpfpsThGLagYCRw1  role network-admin
+username cisco password 5 $5$CKECMB$1v7ytNjol2c08peIrVf96qDjg7lGAHGMMUuRRtOuaK5  role network-operator
+username cisco role network-admin
+username cisco passphrase  lifetime 99999 warntime 14 gracetime 3
+
+banner motd ^CCDO NOT SAVE ANY CONFIGURATION TO THIS DEVICE OR RESET TO FACTORY SETTINGS.
+IF THE INITIAL CONFIGURATION ARE ERASED, RUN THE FOLLOWING COMMANDS:
+- copy flash:initial_configs.cfg startup-config
+- reload ^
+
+ip domain-lookup
+crypto key generate rsa label SW6 modulus 2048
+diagnostic bootup level minimal
+class-map type qos match-any system-cpp-default
+  description EWLC Data, Inter FED Traffic
+class-map type qos match-any non-client-nrt-class
+class-map type qos match-any system-cpp-police-data
+  description ICMP redirect, ICMP_GEN and BROADCAST
+class-map type qos match-any system-cpp-police-forus
+  description Forus Address resolution and Forus traffic
+class-map type qos match-any system-cpp-police-sys-data
+  description Openflow, Exception, EGR Exception, NFL Sampled Data, RPF Failed
+class-map type qos match-any system-cpp-police-multicast
+  description MCAST Data
+class-map type qos match-any system-cpp-police-dot1x-auth
+  description DOT1X Auth
+class-map type qos match-any system-cpp-police-l2-control
+  description L2 control
+class-map type qos match-any system-cpp-police-sw-forward
+  description Sw forwarding, L2 LVX data packets, LOGGING, Transit Traffic
+class-map type qos match-any system-cpp-police-ios-feature
+  description ICMPGEN,BROADCAST,ICMP,L2LVXCntrl,ProtoSnoop,PuntWebauth,MCASTData,Transit,DOT1XAuth,Swfwd,LOGGING,L2LVXData,ForusTraffic,ForusARP,McastEndStn,Openflow,Exception,EGRExcption,NflSampled,RpfFailed
+class-map type qos match-any system-cpp-police-ios-routing
+  description L2 control, Topology control, Routing control, Low Latency
+class-map type qos match-any system-cpp-police-ewlc-control
+  description EWLC Control
+class-map type qos match-any system-cpp-police-punt-webauth
+  description Punt Webauth
+class-map type qos match-any system-cpp-police-dhcp-snooping
+  description DHCP snooping
+class-map type qos match-any system-cpp-police-high-rate-app
+  description High Rate Applications
+class-map type qos match-any system-cpp-police-l2lvx-control
+  description L2 LVX control packets
+class-map type qos match-any system-cpp-police-routing-control
+  description Routing control and Low Latency
+class-map type qos match-any system-cpp-police-system-critical
+  description System Critical and Gold Pkt
+class-map type qos match-any system-cpp-police-topology-control
+  description Topology control
+class-map type qos match-any system-cpp-police-protocol-snooping
+  description Protocol snooping
+class-map type qos match-any system-cpp-police-multicast-end-station
+  description MCAST END STATION
+class-map type qos match-any system-cpp-police-stackwise-virt-control
+  description Stackwise Virtual OOB
+policy-map type qos system-cpp-policy
+copp profile strict
+snmp-server user admin network-admin auth md5 5331F76533848D35122DC927FF301F3CCBBC priv 5305FA6464F2C5681D30973BEB343274AF9E localizedV2key
+snmp-server user cisco network-operator auth md5 4962CD5142B8DB0C3F1BE04F7E93E6ADE8E6 priv 3218910213B3E9467549F24C66A0A1EFE5D5 localizedV2key
+snmp-server user cisco network-admin
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+login on-success log 
+
+ip route 0.0.0.0/0 192.168.150.254
+vlan 1,10,20,30,40,100,150,200,666,888
+vlan 10
+  name client1
+vlan 20
+  name client2
+vlan 30
+  name client3
+vlan 40
+  name client4
+vlan 150
+  name internal
+vlan 200
+  name rspan
+vlan 666
+  name Blackhole
+vlan 888
+  name Native
+
+vrf context management
+
+interface Vlan1
+
+interface Vlan4
+
+interface Vlan10
+  description test1test2
+  no shutdown
+  ip router ospf 1 area 0.0.0.0
+  hsrp 2 
+    preempt 
+    priority 110
+    ip 192.168.10.1
+
+interface Vlan20
+  no shutdown
+  ip address 192.168.20.2/24
+  ip router ospf 1 area 0.0.0.0
+  hsrp 3 
+    preempt 
+    priority 110
+    ip 192.168.20.1
+
+interface Vlan30
+  no shutdown
+  ip address 192.168.30.2/24
+  ip router ospf 1 area 0.0.0.0
+  hsrp 4 
+    ip 192.168.30.1
+
+interface Vlan40
+  no shutdown
+  ip address 192.168.40.2/24
+  ip router ospf 1 area 0.0.0.0
+  hsrp 5 
+    ip 192.168.40.1
+
+interface Vlan150
+  no shutdown
+  ip address 192.168.150.2/24
+  ip router ospf 1 area 0.0.0.0
+
+interface Vlan330
+
+interface Ethernet1/1
+  switchport
+  switchport mode trunk
+  no shutdown
+
+interface Ethernet1/2
+  switchport
+  switchport mode trunk
+  no shutdown
+
+interface Ethernet1/3
+  switchport
+  switchport mode trunk
+  no shutdown
+
+interface Ethernet1/4
+  switchport
+  switchport mode trunk
+  no shutdown
+
+interface Ethernet1/5
+  switchport
+  switchport mode trunk
+  no shutdown
+
+interface Ethernet1/6
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+
+interface Ethernet1/11
+
+interface Ethernet1/12
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+
+interface Ethernet1/44
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+
+interface Ethernet1/48
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+
+interface Ethernet1/55
+
+interface Ethernet1/56
+
+interface Ethernet1/57
+
+interface Ethernet1/58
+
+interface Ethernet1/59
+
+interface Ethernet1/60
+
+interface Ethernet1/61
+
+interface Ethernet1/62
+
+interface Ethernet1/63
+
+interface Ethernet1/64
+
+interface mgmt0
+  vrf member management
+  ip address 192.168.7.16/24
+icam monitor scale
+
+line console
+line vty
+boot nxos bootflash:/nxos.9.3.11.bin 
+router ospf 1
+
+no logging console
+
+
